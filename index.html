@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ISKCON Master Studio</title>
+    
+    <!-- Icons & Fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Teko:wght@500&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- THEME --- */
+        :root {
+            --primary: #FF9933; --primary-glow: rgba(255, 153, 51, 0.4);
+            --danger: #ff4757; --bg-dark: #080808; --panel-bg: #111111;
+            --border: #333; --text-main: #ffffff;
+        }
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; background: var(--bg-dark); color: var(--text-main); font-family: 'Manrope', sans-serif; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
+
+        /* --- LOGIN --- */
+        #login-section { position: absolute; inset: 0; z-index: 2000; background: radial-gradient(circle, #1a1005, #000); display: flex; justify-content: center; align-items: center; }
+        .login-card { background: rgba(30,30,30,0.6); backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.1); padding: 40px; border-radius: 24px; width: 90%; max-width: 400px; text-align: center; }
+        .custom-inp { width: 100%; padding: 15px; margin-bottom: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px; color: white; text-align: center; }
+        .btn-master { width: 100%; padding: 15px; border-radius: 12px; border: none; background: var(--primary); color: white; font-weight: 800; cursor: pointer; box-shadow: 0 5px 20px var(--primary-glow); }
+
+        /* --- ADMIN UI --- */
+        #admin-section { display: none; height: 100%; width: 100%; }
+        .dashboard-grid { display: grid; height: 100%; width: 100%; grid-template-rows: auto 1fr auto; }
+        
+        /* HEADER with Viewer Count */
+        .header { padding: 15px 20px; background: var(--panel-bg); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .brand { font-size: 1.1rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        
+        .viewer-box {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid #333;
+            padding: 5px 15px; border-radius: 30px;
+        }
+        .eye-icon { color: #aaa; font-size: 0.9rem; }
+        .count-txt { font-family: 'Teko', sans-serif; font-size: 1.5rem; line-height: 1; color: white; }
+        
+        /* Live State Styling */
+        body.is-live .eye-icon { color: red; animation: blink 1s infinite; }
+        body.is-live .viewer-box { border-color: red; background: rgba(255, 0, 0, 0.1); }
+        @keyframes blink { 50% { opacity: 0.4; } }
+
+        .btn-icon { background: none; border: none; color: #aaa; font-size: 1.2rem; cursor: pointer; transition: 0.3s; margin-left: 10px; }
+        .btn-icon:hover { color: white; }
+
+        /* Video Stage */
+        .stage { background: black; position: relative; overflow: hidden; }
+        #local-player { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Deck */
+        .deck { background: var(--panel-bg); border-top: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .server-select { width: 100%; background: #222; color: white; border: 1px solid #444; padding: 15px; border-radius: 12px; font-size: 1rem; text-align: center; }
+        
+        .actions { display: grid; grid-template-columns: auto 1fr auto; gap: 15px; }
+        .btn-sq { width: 60px; height: 60px; border-radius: 15px; border: 1px solid var(--border); background: #222; color: white; font-size: 1.2rem; cursor: pointer; display: grid; place-items: center; }
+        .btn-main { height: 60px; border-radius: 15px; border: none; background: var(--primary); color: white; font-weight: 800; font-size: 1.2rem; box-shadow: 0 0 25px var(--primary-glow); cursor: pointer; }
+        .btn-main.stop { background: var(--danger); box-shadow: 0 0 25px rgba(255, 71, 87, 0.4); }
+
+        /* --- SETTINGS MODAL --- */
+        #settings-modal { position: absolute; inset: 0; z-index: 3000; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); display: none; justify-content: center; align-items: center; }
+        .settings-card { background: #1a1a1a; width: 90%; max-width: 500px; height: 80%; border-radius: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+        .s-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #222; }
+        .s-body { padding: 20px; overflow-y: auto; flex: 1; }
+        .id-row { margin-bottom: 15px; }
+        .id-label { font-size: 0.8rem; color: var(--primary); margin-bottom: 5px; display: block; }
+        .id-inp { width: 100%; background: #111; border: 1px solid #333; color: #ddd; padding: 12px; border-radius: 8px; font-family: monospace; }
+        .s-footer { padding: 20px; border-top: 1px solid var(--border); text-align: right; background: #222; }
+        .btn-save { background: var(--primary); color: white; border: none; padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        @media (min-width: 768px) {
+            .dashboard-grid { grid-template-rows: 60px 1fr; grid-template-columns: 1fr 350px; }
+            .header { grid-column: 1 / -1; grid-row: 1; }
+            .stage { grid-column: 1; grid-row: 2; border-right: 1px solid var(--border); }
+            .deck { grid-column: 2; grid-row: 2; border-top: none; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN -->
+    <div id="login-section">
+        <div class="login-card">
+            <h2 style="margin-bottom:20px; color:var(--primary);">Admin Login</h2>
+            <input type="email" id="email" class="custom-inp" placeholder="Email">
+            <input type="password" id="password" class="custom-inp" placeholder="Password">
+            <button id="loginBtn" class="btn-master" onclick="doLogin()">LOGIN</button>
+            <p id="errorMsg" style="color:red; margin-top:10px; display:none;"></p>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div id="admin-section">
+        <div class="dashboard-grid">
+            <div class="header">
+                <div class="brand"><i class="fas fa-broadcast-tower"></i> ISKCON STUDIO</div>
+                
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <!-- 👁️ VIEWER COUNT -->
+                    <div class="viewer-box">
+                        <i class="fas fa-eye eye-icon"></i>
+                        <span id="viewerCount" class="count-txt">0</span>
+                    </div>
+
+                    <!-- Settings Button -->
+                    <button class="btn-icon" onclick="openSettings()" title="Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button class="btn-icon" onclick="doLogout()"><i class="fas fa-power-off"></i></button>
+                </div>
+            </div>
+
+            <div class="stage"><div id="local-player"></div></div>
+
+            <div class="deck">
+                <div style="color:#666; font-size:0.8rem; font-weight:bold; margin-bottom:5px;">TRANSMISSION LINE</div>
+                <select id="serverSelector" class="server-select" onchange="handleServerChange(this.value)">
+                    <option value="0">Server 01 (Primary)</option>
+                    <option value="1">Server 02</option>
+                    <option value="2">Server 03</option>
+                    <option value="3">Server 04</option>
+                    <option value="4">Server 05</option>
+                    <option value="5">Server 06</option>
+                    <option value="6">Server 07</option>
+                </select>
+
+                <div class="actions">
+                    <button class="btn-sq" id="btnMic" onclick="toggleMic()"><i class="fas fa-microphone"></i></button>
+                    <button class="btn-main" id="streamBtn" onclick="toggleStream()">GO LIVE</button>
+                    <button class="btn-sq" onclick="switchCam()"><i class="fas fa-sync-alt"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal">
+        <div class="settings-card">
+            <div class="s-header">
+                <span style="font-weight:bold; color:white;">Configure Agora App IDs</span>
+                <button class="btn-icon" onclick="closeSettings()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="s-body" id="ids-container"></div>
+            <div class="s-footer">
+                <button class="btn-save" onclick="saveIds()">SAVE & UPDATE</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.18.2.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        // 🔥 FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyBfbNzASqzPt4kMP-LlpJasIras7ifTch4",
+            authDomain: "iskcon-hadapsar.firebaseapp.com",
+            databaseURL: "https://iskcon-hadapsar-default-rtdb.firebaseio.com",
+            projectId: "iskcon-hadapsar",
+            storageBucket: "iskcon-hadapsar.firebasestorage.app",
+            messagingSenderId: "231589086724",
+            appId: "1:231589086724:web:64d8a5d7a136b39db39751",
+            measurementId: "G-P8KFYD118L"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        let AGORA_IDS = []; 
+        let client = null, tracks = { video: null, audio: null }, isLive = false;
+
+        // AUTH
+        window.doLogin = () => {
+            const e = document.getElementById('email').value, p = document.getElementById('password').value;
+            if(!e || !p) return;
+            document.getElementById('loginBtn').innerHTML = 'Checking...';
+            signInWithEmailAndPassword(auth, e, p).catch(err => {
+                document.getElementById('loginBtn').innerHTML = 'LOGIN';
+                document.getElementById('errorMsg').innerText = err.code;
+                document.getElementById('errorMsg').style.display='block';
+            });
+        };
+        window.doLogout = () => { if(confirm("Logout?")) signOut(auth); };
+        
+        onAuthStateChanged(auth, u => {
+            document.getElementById('login-section').style.display = u ? 'none' : 'flex';
+            document.getElementById('admin-section').style.display = u ? 'block' : 'none';
+            if(u) { initCam(); loadIds(); }
+        });
+
+        // 👁️ LIVE VIEWER COUNT
+        onValue(ref(db, 'viewers'), (snapshot) => {
+            // Count number of child nodes in 'viewers'
+            const count = snapshot.size; 
+            document.getElementById('viewerCount').innerText = count;
+        });
+
+        // SETTINGS
+        window.openSettings = () => {
+            const container = document.getElementById('ids-container');
+            container.innerHTML = "";
+            for(let i=0; i<7; i++) {
+                const val = AGORA_IDS[i] || "";
+                container.innerHTML += `<div class="id-row"><label class="id-label">Server ${i+1} App ID</label><input type="text" class="id-inp" id="id_input_${i}" value="${val}"></div>`;
+            }
+            document.getElementById('settings-modal').style.display = 'flex';
+        };
+        window.closeSettings = () => document.getElementById('settings-modal').style.display = 'none';
+        window.saveIds = async () => {
+            const newIds = [];
+            for(let i=0; i<7; i++) newIds.push(document.getElementById(`id_input_${i}`).value.trim());
+            if(confirm("Save IDs?")) { await set(ref(db, 'config/agora_ids'), newIds); alert("Saved!"); closeSettings(); }
+        };
+        function loadIds() {
+            onValue(ref(db, 'config/agora_ids'), (snap) => {
+                const data = snap.val();
+                if(data && Array.isArray(data)) AGORA_IDS = data;
+                else AGORA_IDS = Array(7).fill("");
+            });
+        }
+
+        // STREAMING
+        async function initCam() {
+            if(!tracks.video) {
+                try {
+                    [tracks.audio, tracks.video] = await AgoraRTC.createMicrophoneAndCameraTracks({encoderConfig:"high_quality_stereo"}, {encoderConfig:"720p_1"});
+                    tracks.video.play("local-player");
+                } catch(e) { console.error(e); }
+            }
+        }
+
+        window.toggleStream = async () => {
+            if (!isLive) await startStream(document.getElementById('serverSelector').value);
+            else {
+                if(confirm("Stop Broadcast?")) {
+                    await client.leave();
+                    set(ref(db, 'live_status'), { isLive: false, serverIndex: 0 });
+                    isLive = false;
+                    updateUI(false);
+                }
+            }
+        };
+
+        window.handleServerChange = async (newIndex) => {
+            if (isLive && confirm(`Switch to Server ${parseInt(newIndex)+1}?`)) await startStream(newIndex);
+        };
+
+        async function startStream(index) {
+            const btn = document.getElementById('streamBtn');
+            const appId = AGORA_IDS[index];
+            if(!appId) { alert("Add ID in Settings first!"); return; }
+
+            if (client) await client.leave();
+            btn.innerText = "CONNECTING...";
+            try {
+                client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
+                await client.setClientRole("host");
+                await client.join(appId, "iskcon_live", null, null);
+                await client.publish([tracks.video, tracks.audio]);
+                set(ref(db, 'live_status'), { isLive: true, serverIndex: parseInt(index) });
+                isLive = true;
+                updateUI(true);
+            } catch(e) { alert("Error: " + e); updateUI(false); }
+        }
+
+        function updateUI(live) {
+            const btn = document.getElementById('streamBtn');
+            if(live) {
+                document.body.classList.add('is-live');
+                btn.innerText = "END STREAM";
+                btn.classList.add('stop');
+            } else {
+                document.body.classList.remove('is-live');
+                btn.innerText = "GO LIVE";
+                btn.classList.remove('stop');
+            }
+        }
+
+        window.toggleMic = () => { if(tracks.audio) { const en = tracks.audio.getMediaStreamTrack().enabled; tracks.audio.setEnabled(!en); } };
+        window.switchCam = async () => { if(tracks.video) { const cams = await AgoraRTC.getCameras(); if(cams.length > 1) { const next = cams.find(c => c.deviceId !== tracks.video.getMediaStreamTrack().getSettings().deviceId); tracks.video.setEnabled(false); await tracks.video.setDevice(next.deviceId); tracks.video.setEnabled(true); } } };
+    </script>
+</body>
+</html>
