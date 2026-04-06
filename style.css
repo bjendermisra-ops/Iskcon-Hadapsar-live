@@ -1,0 +1,119 @@
+/* =========================================
+   ISKCON Premium Website Styles
+   ========================================= */
+:root {
+    --primary: #FF9933;       
+    --secondary: #4a2c2a;     
+    --bg-color: #FAFAFA;      
+    --card-bg: #ffffff;       
+    --text-color: #2b2b2b;       
+    --ui-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+    --powerful-shadow: 0 10px 30px rgba(255, 153, 51, 0.25);
+    --transition: 0.3s ease-in-out;
+}
+
+[data-theme="dark"] {
+    --primary: #FF9933; 
+    --bg-color: #121212; 
+    --card-bg: #1e1e1e; 
+    --text-color: #ececec;
+    --ui-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', 'Noto Sans Devanagari', sans-serif;
+    transition: background-color var(--transition), color var(--transition);
+}
+
+.cinzel-font { font-family: 'Cinzel', serif; }
+.font-dancing { font-family: 'Dancing Script', cursive; }
+
+/* Navbar */
+.custom-navbar {
+    background: linear-gradient(90deg, #E65100, var(--primary), #FF7043);
+    background-size: 200% auto;
+    animation: gradientMove 4s ease infinite;
+}
+@keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+.nav-logo-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid white; object-fit: cover; }
+.brand-text-img { height: 45px; object-fit: contain; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
+.custom-navbar .nav-link { color: white !important; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; }
+.custom-navbar .nav-link:hover { color: #ffe0b2 !important; }
+
+/* Ticker */
+.mantra-ticker { background-color: #fff3e0; color: #d84315; padding: 8px 0; overflow: hidden; white-space: nowrap; font-family: 'Cinzel', serif; font-weight: 800; font-size: 0.9rem; box-shadow: inset 0 -3px 8px rgba(0,0,0,0.03); }
+[data-theme="dark"] .mantra-ticker { background-color: #2e1503; color: #ffb74d; }
+.mantra-ticker-content { display: inline-block; white-space: nowrap; animation: textScroll 25s linear infinite; }
+@keyframes textScroll { 100% { transform: translate3d(-50%, 0, 0); } }
+
+/* Hero Slider */
+.hero-slider { height: 400px; }
+.carousel-item img { width: 100%; height: 400px; object-fit: cover; filter: brightness(0.9); }
+.date-slide { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(135deg, #FF6F00, #F57F17); color: white; text-align: center; position: relative; overflow: hidden;}
+.date-slide h1 { font-family: 'Cinzel', serif; font-size: 4.5rem; margin: 0; line-height: 1; text-shadow: 0 5px 15px rgba(0,0,0,0.4); z-index: 2; }
+.live-clock { background: rgba(0,0,0,0.5); padding: 5px 20px; border-radius: 20px; font-family: monospace; font-size: 1.2rem; z-index: 2;}
+.ekadasi-alert { background: rgba(255,255,255,0.25); backdrop-filter: blur(8px); padding: 10px 20px; border-radius: 12px; font-weight: bold; margin-top: 10px; z-index: 2; }
+
+/* Dynamic Names Slide */
+.name-slide { height: 100%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; position: relative;}
+.ns-bday { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); color: #880e4f; }
+.ns-donate { background: linear-gradient(135deg, #a8ff78 0%, #78ffd6 100%); color: #004d40; }
+.ns-notice { background: linear-gradient(135deg, #FFC371 0%, #FF5F6D 100%); color: #3e2723; }
+.name-container { background: rgba(255,255,255,0.65); border-radius: 16px; padding: 15px; backdrop-filter: blur(10px); width: 80%; box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 2; }
+.person-container { padding-bottom: 8px; border-bottom: 1px dashed rgba(0,0,0,0.1); margin-bottom: 8px; }
+.person-container:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.person-name { font-weight: bold; font-size: 1.1rem; }
+
+/* Divine Message */
+.gita-daily-thought { background: linear-gradient(135deg, rgba(255,153,51,0.08), var(--card-bg)); border-left: 6px solid var(--primary); border-radius: 16px; padding: 30px; position: relative; overflow: hidden; }
+.gita-daily-thought::before { content:'\f10e'; font-family:'Font Awesome 6 Free'; font-weight:900; position:absolute; right: -10px; bottom: -20px; font-size: 8rem; color: var(--primary); opacity:0.05; }
+.g-t-head { color: var(--primary); font-family: 'Cinzel', serif; font-weight: bold; }
+
+/* Feature Cards */
+.feature-card { background: var(--card-bg); border-radius: 16px; padding: 20px 10px; text-align: center; text-decoration: none; color: var(--text-color); display: flex; flex-direction: column; align-items: center; transition: var(--transition); border: 1px solid transparent; position: relative; }
+.feature-card:hover { transform: translateY(-5px); box-shadow: var(--powerful-shadow); }
+.border-bottom-thick { border-bottom: 3px solid; }
+.new-badge { position: absolute; top: 0; right: 0; padding: 3px 10px; border-radius: 0 16px 0 12px; font-size: 0.7rem; font-weight: bold; }
+.live-dot { position: absolute; top: 15px; right: 35%; width: 10px; height: 10px; background-color: #ff1744; border-radius: 50%; animation: livePulse 1s infinite alternate; }
+@keyframes livePulse { from { opacity: 1; transform: scale(0.8); } to { opacity: 0.4; transform: scale(1.4); } }
+
+/* App Download Section */
+.app-download-section { position: relative; }
+@keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+.bg-flare { position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%); animation: breatheFx 4s infinite alternate; }
+@keyframes breatheFx { 0%{ opacity: 0.3; transform: scale(1);} 100%{ opacity: 0.6; transform: scale(1.5);} }
+.btn-hover-scale { transition: 0.3s; }
+.btn-hover-scale:hover { transform: scale(1.05); }
+
+/* Master Lyrics */
+.master-lyrics-box { background: linear-gradient(135deg, #ad1457, #D81B60); border-radius: 20px; position: relative; overflow: hidden; box-shadow: 0 12px 35px rgba(216, 27, 96, 0.3); }
+.float-letters { position: absolute; width: 100%; height: 100%; opacity: 0.2; pointer-events: none; }
+.fl-txt { position: absolute; font-size: 3rem; animation: flyUp 5s linear infinite; }
+.fl-1 { left: 10%; animation-delay: 0s; } .fl-2 { left: 50%; animation-delay: 2s; } .fl-3 { left: 80%; animation-delay: 1s; }
+@keyframes flyUp { 0% { transform: translateY(100px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-100px) scale(1.2); opacity: 0; } }
+.epic-book-icon { width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #ffeb3b; border: 2px solid rgba(255,235,59,0.5); }
+
+/* Media Grid Items */
+.preview-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; transition: var(--transition); cursor: pointer; border: 1px solid rgba(150,150,150,0.1); box-shadow: var(--ui-shadow); }
+.preview-card:hover { transform: translateY(-5px); box-shadow: var(--powerful-shadow); }
+.preview-img { width: 100%; height: 150px; object-fit: cover; }
+.preview-title { padding: 12px; font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center;}
+
+/* Address Box */
+.top-gradient-bar { position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: linear-gradient(90deg, #E65100, var(--primary), #E65100); background-size: 200%; animation: gradientMove 3s linear infinite; }
+
+/* Footer */
+.premium-footer { background: linear-gradient(180deg, #3d1b19 0%, #0d0402 100%); position: relative; margin-top: 80px; }
+.footer-wave { width: 100%; height: 70px; display: block; fill: #3d1b19; margin-top: -65px; }
+.footer-logo-img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); background: #fff; }
+.f-icon { width: 45px; height: 45px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; text-decoration: none; transition: var(--transition); }
+.f-icon:hover { background: var(--primary); transform: scale(1.1); }
+.footer-links a { color: #ffb74d; text-decoration: none; font-weight: 600; transition: 0.3s; }
+.footer-links a:hover { color: white; }
+
+/* Offline */
+.offline-banner { display: none; background: #f44336; color: white; text-align: center; padding: 10px; font-weight: bold; position: sticky; top: 0; z-index: 2000; }
+body.is-offline .offline-banner { display: block; }
